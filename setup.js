@@ -1,0 +1,1 @@
+Game.spawns["Spawn1"].memory.queue = []; // Sets up the spawn queue for the spawner
