@@ -1,6 +1,7 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleMiner = require('role.miner');
 var _ = require('lodash');
 
 const HARVESTER_COUNT = 2;
@@ -9,8 +10,9 @@ const BUILDER_COUNT = 1;
 const ROLES = ["harvester", "upgrader", "builder"];
 const ROLE_COUNTS = {
     "harvester" : 2,
-    "upgrader" : 1,
-    "builder" : 3
+    "upgrader" : 3,
+    "builder" : 2,
+    "miner" : 2
 };
 
 module.exports.loop = function () {
@@ -54,6 +56,9 @@ module.exports.loop = function () {
                 case "builder":
                     roleBuilder.spawn();
                     break;
+                case "miner":
+                    roleMiner.spawn();
+                    break;
                 default:
                     console.log("An invalid role has been chosen");
             }
@@ -63,15 +68,23 @@ module.exports.loop = function () {
 
 
     for(var name in Game.creeps) {
-        var creep = Game.creeps[name];
-        if(creep.memory.role == 'harvester') {
-            roleHarvester.run(creep);
-        }
-        if(creep.memory.role == 'upgrader') {
-            roleUpgrader.run(creep);
-        }
-        if(creep.memory.role == 'builder') {
-            roleBuilder.run(creep);
+        let creep = Game.creeps[name];
+        let role = creep.memory.role;
+        switch (role) {
+            case "harvester":
+                roleHarvester.run(creep);
+                break;
+            case "upgrader":
+                roleUpgrader.run(creep);
+                break;
+            case "builder":
+                roleBuilder.run(creep);
+                break;
+            case "miner":
+                roleMiner.run(creep);
+                break;
+            default:
+                console.log("An invalid role has been chosen");
         }
     }
 }

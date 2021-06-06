@@ -1,0 +1,14 @@
+var roleMiner = {
+
+    spawn: function() {
+        let body = [WORK, WORK, MOVE];
+        let name = "harvester-" + Game.time;
+        Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "miner"}});
+    },
+
+    /** @param {Creep} creep **/
+    run: function(creep) {
+	}
+};
+
+module.exports = roleMiner;
