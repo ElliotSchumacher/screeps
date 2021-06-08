@@ -7,7 +7,7 @@ var _ = require('lodash');
 const HARVESTER_COUNT = 2;
 const UPGRADER_COUNT = 1;
 const BUILDER_COUNT = 1;
-const ROLES = ["harvester", "upgrader", "builder"];
+const ROLES = ["harvester", "upgrader", "builder", "miner"];
 const ROLE_COUNTS = {
     "harvester" : 2,
     "upgrader" : 3,
@@ -44,7 +44,7 @@ module.exports.loop = function () {
                     spawn.memory.queue.push(role);
                 }
             }
-        } else {
+        } else if (spawn.memory.queue.length > 0) {
             let role = spawn.memory.queue.shift();
             switch (role) {
                 case "harvester":
@@ -57,7 +57,13 @@ module.exports.loop = function () {
                     roleBuilder.spawn();
                     break;
                 case "miner":
-                    roleMiner.spawn();
+                    let sourceCount = creep.room.find(FIND_SOURCES).length;
+                    let livingMiners = _.filter(Game.creeps, function(creep) {
+                        return creep.memory.role == "miner";
+                    })
+                    let livingMinersSource = livingMiners[0].sourceIndex;
+                    let sourceIndex = (livingMinersSource + 1) % sourceCount;
+                    roleMiner.spawn(sourceIndex);
                     break;
                 default:
                     console.log("An invalid role has been chosen");
