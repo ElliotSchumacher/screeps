@@ -42,7 +42,7 @@ var roleCleaner = {
             // if list exists
                 // find closest dropped resource
                 // harvest it
-                if (creep.pickup(resouce) == ERR_NOT_IN_RANGE) {
+                if (creep.pickup(resource) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(resource, {visualizePathStyle: {stroke: '#ffaa00'}});
                 }
             } else {
