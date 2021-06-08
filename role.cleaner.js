@@ -54,4 +54,4 @@ var roleCleaner = {
 	}
 };
 
-module.exports = roleMiner;
+module.exports = roleCleaner;

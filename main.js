@@ -97,6 +97,9 @@ module.exports.loop = function () {
             case "miner":
                 roleMiner.run(creep);
                 break;
+            case "cleaner":
+                roleCleaner.run(creep);
+                break;
             default:
                 console.log("An invalid role has been chosen");
         }

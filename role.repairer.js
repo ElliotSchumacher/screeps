@@ -19,4 +19,4 @@ var roleRepairer = {
 	}
 };
 
-module.exports = roleBuilder;
+module.exports = roleRepairer;
