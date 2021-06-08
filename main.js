@@ -2,18 +2,16 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleMiner = require('role.miner');
+var roleCleaner = require('role.cleaner');
 var _ = require('lodash');
 
-const HARVESTER_COUNT = 2;
-const UPGRADER_COUNT = 1;
-const BUILDER_COUNT = 1;
-const ROLES = ["harvester", "upgrader", "builder", "miner"];
+const ROLES = ["harvester", "upgrader", "builder", "miner", "cleaner"];
 const ROLE_COUNTS = {
     "harvester" : 1,
     "upgrader" : 3,
     "builder" : 1,
-    "builder" : 2,
-    "miner" : 2
+    "miner" : 2,
+    "cleaner" : 1
 };
 
 module.exports.loop = function () {
@@ -64,13 +62,16 @@ module.exports.loop = function () {
                     });
                     let sourceIndex;
                     if (livingMiners.length > 0) {
-                    let livingMinersSource = livingMiners[0].sourceIndex;
+                        let livingMinersSource = livingMiners[0].sourceIndex;
                         sourceIndex = (livingMinersSource + 1) % sourceCount;
                     } else {
                         sourceIndex = 0;
                     }
                     console.log("SourceIndex: " + sourceIndex);
                     roleMiner.spawn(sourceIndex);
+                    break;
+                case "cleaner":
+                    roleCleaner.spawn();
                     break;
                 default:
                     console.log("An invalid role has been chosen");
