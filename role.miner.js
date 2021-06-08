@@ -1,7 +1,7 @@
 var roleMiner = {
 
     spawn: function(source) {
-        let body = [WORK, WORK, WORK, MOVE];
+        let body = [WORK, WORK, WORK, CARRY, MOVE];
         let name = "miner-" + Game.time;
         Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "miner", source_index: source}});
     },

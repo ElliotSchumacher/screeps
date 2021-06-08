@@ -9,8 +9,9 @@ const UPGRADER_COUNT = 1;
 const BUILDER_COUNT = 1;
 const ROLES = ["harvester", "upgrader", "builder", "miner"];
 const ROLE_COUNTS = {
-    "harvester" : 2,
+    "harvester" : 1,
     "upgrader" : 3,
+    "builder" : 1,
     "builder" : 2,
     "miner" : 2
 };
@@ -57,12 +58,18 @@ module.exports.loop = function () {
                     roleBuilder.spawn();
                     break;
                 case "miner":
-                    let sourceCount = creep.room.find(FIND_SOURCES).length;
+                    let sourceCount = Game.rooms["W29N5"].find(FIND_SOURCES).length;
                     let livingMiners = _.filter(Game.creeps, function(creep) {
                         return creep.memory.role == "miner";
-                    })
+                    });
+                    let sourceIndex;
+                    if (livingMiners.length > 0) {
                     let livingMinersSource = livingMiners[0].sourceIndex;
-                    let sourceIndex = (livingMinersSource + 1) % sourceCount;
+                        sourceIndex = (livingMinersSource + 1) % sourceCount;
+                    } else {
+                        sourceIndex = 0;
+                    }
+                    console.log("SourceIndex: " + sourceIndex);
                     roleMiner.spawn(sourceIndex);
                     break;
                 default:
