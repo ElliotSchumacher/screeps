@@ -11,8 +11,10 @@ var roleMiner = {
 
         let sources = creep.room.find(FIND_SOURCES);
         let source = sources[creep.memory.sourceIndex];
-        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+        if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
         }
         if (creep.store.getUsedCapacity(RESOURCE_ENERGY) > 5) {
             let container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
