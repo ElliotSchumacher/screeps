@@ -9,6 +9,8 @@ var roleCleaner = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
+        // console.log("Used Capacity: " + creep.store.getUsedCapacity(RESOURCE_ENERGY));
+        // console.log("Free Capacity: " + creep.store.getFreeCapacity(RESOURCE_ENERGY));
         let droppedResource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
         // if inventory is full or list of dropped recources is empty
         if (creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0 || !droppedResource) {
@@ -22,7 +24,7 @@ var roleCleaner = {
         // if unloading
         if (creep.memory.unloading) { 
             // travel to a spawn, extension or tower and transfer it to that structure
-            let structure = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            let structure = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: function(structure) {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
                         structure.structureType == STRUCTURE_SPAWN ||
@@ -38,12 +40,21 @@ var roleCleaner = {
         // else 
             // create list of dropped recourses
             let resource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
+            let ruin = creep.pos.findClosestByRange(FIND_RUINS, {
+                filter: function(ruin) {
+                    return ruin.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
+                }
+            });
             if (resource) {
             // if list exists
                 // find closest dropped resource
                 // harvest it
                 if (creep.pickup(resource) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(resource, {visualizePathStyle: {stroke: '#ffaa00'}});
+                }
+            } else if (ruin) {
+                if (creep.withdraw(ruin) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(ruin, {visualizePathStyle: {stroke: '#ffaa00'}});
                 }
             } else {
             // else // no dropped recouce
