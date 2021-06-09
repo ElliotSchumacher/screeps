@@ -61,11 +61,11 @@ module.exports.loop = function () {
                         return creep.memory.role == "miner";
                     });
                     let sourceIndex;
-                    if (livingMiners.length > 0) {
-                        let livingMinersSource = livingMiners[0].sourceIndex;
-                        sourceIndex = (livingMinersSource + 1) % sourceCount;
-                    } else {
+                    if (livingMiners.length == 0) {
                         sourceIndex = 0;
+                    } else {
+                        let livingMinersSource = livingMiners[0].memory.sourceIndex;
+                        sourceIndex = (livingMinersSource + 1) % sourceCount;
                     }
                     console.log("SourceIndex: " + sourceIndex);
                     roleMiner.spawn(sourceIndex);
