@@ -3,15 +3,17 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleMiner = require('role.miner');
 var roleCleaner = require('role.cleaner');
+var roleRepairer = require('role.repairer');
 var _ = require('lodash');
 
-const ROLES = ["harvester", "upgrader", "builder", "miner", "cleaner"];
+const ROLES = ["harvester", "upgrader", "builder", "miner", "cleaner", "repairer"];
 const ROLE_COUNTS = {
     "harvester" : 1,
-    "upgrader" : 3,
-    "builder" : 1,
+    "upgrader" : 2,
+    "builder" : 0,
     "miner" : 2,
-    "cleaner" : 1
+    "cleaner" : 1,
+    "repairer" : 1
 };
 
 module.exports.loop = function () {
@@ -73,13 +75,14 @@ module.exports.loop = function () {
                 case "cleaner":
                     roleCleaner.spawn();
                     break;
+                case "repairer":
+                    roleRepairer.spawn();
+                    break;
                 default:
                     console.log("An invalid role has been chosen");
             }
         }
     }
-
-
 
     for(var name in Game.creeps) {
         let creep = Game.creeps[name];
@@ -99,6 +102,9 @@ module.exports.loop = function () {
                 break;
             case "cleaner":
                 roleCleaner.run(creep);
+                break;
+            case "repairer":
+                roleRepairer.run(creep);
                 break;
             default:
                 console.log("An invalid role has been chosen");
