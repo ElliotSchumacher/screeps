@@ -8,6 +8,7 @@ var roleCourier = require('role.courier');
 var _ = require('lodash');
 var helper = require("helper");
 
+const ROOM = "W29N5";
 const ROLES = {
     "harvester" : {"counts": 0, "priority": 0, "module": roleHarvester},
     "upgrader" : {"counts": 2, "priority": 5, "module": roleUpgrader},
@@ -29,7 +30,6 @@ module.exports.loop = function () {
     if (Game.cpu.bucket == 10000) {
         Game.cpu.generatePixel();
     }
-
     // Remove dead screeps from memmory
     for (let name in Memory.creeps) {
         if (!Game.creeps[name]) {
@@ -37,30 +37,31 @@ module.exports.loop = function () {
             console.log("Deleted creep memory with name " + name);
         }
     }
+    // Set room stage
+    let room = Game.rooms[ROOM];
+    let extensionCount = room.find(FIND_MY_STRUCTURES, {
+        filter: function(structure) { return structure.structureType == STRUCTURE_EXTENSION}
+    }).length;
+    let stage = Math.floor(extensionCount / 5);
+    // console.log("extensionCount: " + extensionCount);
+    // console.log("stage: " + stage);
+    room.memory.stage = stage;
 
     let spawn = Game.spawns["Spawn1"];
     // if not already spawning
     if (!spawn.spawning) {
-        // Adds creeps that need to be spawned to a queue for the spawner
-        if (spawn.memory.queue.length <= 0) {
-            //get all creeps
-            let creeps = Game.creeps;
-            //count number of each role.
-            for (let role in ROLES) {
-                // console.log("role:" + role);
-                let currentRoleCount  = _.filter(creeps, function(creep) {
-                    return creep.memory.role == role;
-                });
-                //if count for role is too small
-                let missingCreeps = ROLES[role].counts - currentRoleCount.length;
-                for (let creepAdded = 0; creepAdded < missingCreeps; creepAdded++) {
-                    spawn.memory.queue.push(role);
-                }
+        let index = 0;
+        let spawnRoleFound = false;
+        while (index < prioritizedRoles.length && spawnRoleFound) {
+            let role = prioritizedRoles[index];
+            if (ROLES[role].module.spawnRequired(room)) {
+                // TODO: add stage parameter to spawn method call
+                ROLES[role].module.spawn();
+                spawnRoleFound = true;
             }
-        } else if (spawn.memory.queue.length > 0) {
-            let role = spawn.memory.queue.shift();
-            ROLES[role].module.spawn();
         }
+    } else {
+        prioritizedRoles = helper.prioritizeRoles(ROLES);
     }
 
     for(var name in Game.creeps) {
