@@ -4,6 +4,7 @@ var roleBuilder = require('role.builder');
 var roleMiner = require('role.miner');
 var roleCleaner = require('role.cleaner');
 var roleRepairer = require('role.repairer');
+var roleCourier = require('role.courier');
 var _ = require('lodash');
 
 const ROLES = {
@@ -12,11 +13,13 @@ const ROLES = {
     "builder" : {"counts": 0, "module": roleBuilder},
     "miner" : {"counts": 2, "module": roleMiner},
     "cleaner" : {"counts": 1, "module": roleCleaner},
-    "repairer" : {"counts": 3, "module": roleRepairer}
+    "repairer" : {"counts": 3, "module": roleRepairer},
+    "courier" : {"counts": 2, "module": roleCourier}
 };
 
 module.exports.loop = function () {
 
+    // Generate pixels
     if (Game.cpu.bucket == 10000) {
         Game.cpu.generatePixel();
     }
