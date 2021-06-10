@@ -43,7 +43,40 @@ var roleRepairer = {
                 creep.moveTo(damagedStructure, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
-	}
+	},
+
+    /** @param {Room} room 
+     *  @return {boolean} true if no repairer & damage > 0; 1 repairer & damage > 5000.
+     *                    false otherwise
+     **/
+    spawnRequired: function(room) {
+        let creeps = _.filter(Game.creeps, function(creep) {
+            return creep.room == room && creep.memory.role == "repairer"; 
+        });
+        if (creeps.length > 1) {
+            return false;
+        }
+        let damagedStructures = room.find(FIND_STRUCTURES, {
+            filter: function (structure) {
+                return (structure.hitsMax - structure.hits > 0) && 
+                        structure.structureType != STRUCTURE_WALL;
+            }
+        });
+        let totalDamage = 0;
+        // console.log(damagedStructures);
+        // console.log(damagedStructures.length);
+        // console.log(damagedStructures[0].hitsMax - damagedStructures[0].hits);
+        // console.log(totalDamage);
+        for (let index = 0; index < damagedStructures.length; index++) {
+            let structure = damagedStructures[index];
+            // console.log(structure);
+            totalDamage = totalDamage + (structure.hitsMax - structure.hits);
+            // console.log(totalDamage);
+        }
+        console.log("totalDamage: " + totalDamage);
+        let desiredCreepCount = Math.ceil(totalDamage / 5000);
+        return desiredCreepCount - creeps.length > 0;
+    }
 };
 
 module.exports = roleRepairer;

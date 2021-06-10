@@ -48,7 +48,18 @@ var roleCourier = {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
-	}
+	},
+
+    /** @param {Room} room 
+     *  @return {boolean} true if courier count < room stage.
+     *                    false otherwise
+     **/
+    spawnRequired: function(room) {
+        let creeps = _.filter(Game.creeps, function(creep) {
+            return creep.room == room && creep.memory.role == "courier"; 
+        });
+        return creeps.length < room.memory.stage;
+    }
 };
 
 module.exports = roleCourier;

@@ -38,7 +38,17 @@ var roleUpgrader = {
                 creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
-	}
+	},
+
+    /** @param {Room} room 
+     *  @return {boolean} true if there are fewer than 2 upgraders. false otherwise
+     **/
+    spawnRequired: function(room) {
+        let creeps = _.filter(Game.creeps, function(creep) {
+            return creep.room == room && creep.memory.role == "upgrader"; 
+        });
+        return creeps.length < 2;
+    }
 };
 
 module.exports = roleUpgrader;

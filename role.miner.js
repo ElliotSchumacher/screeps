@@ -38,7 +38,19 @@ var roleMiner = {
                 creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
-	}
+	},
+
+    /** @param {Room} room 
+     *  @return {boolean} true if number of miners is less than number of sources.
+     *                    false otherwise
+     **/
+    spawnRequired: function(room) {
+        let creeps = _.filter(Game.creeps, function(creep) {
+            return creep.room == room && creep.memory.role == "miner"; 
+        });
+        let sources = room.find(FIND_SOURCES);
+        return creeps.length < sources.length;
+    }
 };
 
 module.exports = roleMiner;

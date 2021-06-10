@@ -40,8 +40,19 @@ var roleBuilder = {
             if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
-	    }
-	}
+        }
+	},
+
+    /** @param {Room} room 
+     *  @return {boolean} true if construction site exists and builders are less
+     *                    than 2. false otherwise
+     **/
+    spawnRequired: function(room) {
+        let creeps = _.filter(Game.creeps, function(creep) {
+            return creep.room == room && creep.memory.role == "builder"; 
+        });
+        return creeps.length < 2 && room.find(FIND_CONSTRUCTION_SITES);
+    }
 };
 
 module.exports = roleBuilder;

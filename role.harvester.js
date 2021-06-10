@@ -30,7 +30,18 @@ var roleHarvester = {
                 }
             }
         }
-	}
+	},
+
+    /** @param {Room} room 
+     *  @return {boolean} true if no couriers and no harvesters. false otherwise
+     **/
+    spawnRequired: function(room) {
+        let creeps = _.filter(Game.creeps, function(creep) {
+            return creep.room == room && 
+            (creep.memory.role == "courier" || creep.memory.role == "harvester"); 
+        });
+        return creeps.length == 0;
+    }
 };
 
 module.exports = roleHarvester;

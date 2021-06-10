@@ -62,7 +62,33 @@ var roleCleaner = {
                 creep.moveTo(Game.spawns["Spawn1"], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
-	}
+	},
+    
+    /** @param {Room} room 
+     *  @return {boolean} true if no cleaners exist and there is something to pick up.
+     *                    false otherwise
+     **/
+    spawnRequired: function(room) {
+        const searchCriteria = [FIND_DROPPED_RESOURCES, FIND_TOMBSTONES, FIND_RUINS];
+        let creeps = _.filter(Game.creeps, function(creep) {
+            return creep.room == room && creep.memory.role == "cleaner"; 
+        });
+        if (creeps.length > 0) {
+            return false;
+        } else {
+            for (let criteria in searchCriteria) {
+                let targets = room.find(criteria, {
+                    filter: function(target) {
+                        return target.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
+                    }
+                });
+                if (targets) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 };
 
 module.exports = roleCleaner;
