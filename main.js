@@ -6,19 +6,25 @@ var roleCleaner = require('role.cleaner');
 var roleRepairer = require('role.repairer');
 var roleCourier = require('role.courier');
 var _ = require('lodash');
+var helper = require("helper");
 
 const ROLES = {
-    "harvester" : {"counts": 1, "module": roleHarvester},
-    "upgrader" : {"counts": 2, "module": roleUpgrader},
-    "builder" : {"counts": 0, "module": roleBuilder},
-    "miner" : {"counts": 2, "module": roleMiner},
-    "cleaner" : {"counts": 1, "module": roleCleaner},
-    "repairer" : {"counts": 3, "module": roleRepairer},
-    "courier" : {"counts": 2, "module": roleCourier}
+    "harvester" : {"counts": 0, "priority": 0, "module": roleHarvester},
+    "upgrader" : {"counts": 2, "priority": 5, "module": roleUpgrader},
+    "builder" : {"counts": 1, "priority": 4, "module": roleBuilder},
+    "miner" : {"counts": 2, "priority": 2, "module": roleMiner},
+    "cleaner" : {"counts": 0, "priority": 6, "module": roleCleaner},
+    "repairer" : {"counts": 1, "priority": 2, "module": roleRepairer},
+    "courier" : {"counts": 1, "priority": 3, "module": roleCourier}
 };
 
-module.exports.loop = function () {
+let prioritizedRoles;
 
+module.exports.loop = function () {
+    // Perform setup commands
+    if (!prioritizedRoles) {
+        prioritizedRoles = helper.prioritizeRoles(ROLES);
+    }
     // Generate pixels
     if (Game.cpu.bucket == 10000) {
         Game.cpu.generatePixel();
