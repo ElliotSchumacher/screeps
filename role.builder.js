@@ -27,9 +27,18 @@ var roleBuilder = {
             }
 	    }
 	    else {
-            let source = creep.pos.findClosestByRange(FIND_SOURCES);
-            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+            // let source = creep.pos.findClosestByRange(FIND_SOURCES);
+            // if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+            //     creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+            // }
+            let container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: function(structure) {
+                    return structure.structureType == STRUCTURE_CONTAINER &&
+                           structure.store.getUsedCapacity() > 0;
+                }
+            });
+            if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
 	    }
 	}

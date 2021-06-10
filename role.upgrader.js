@@ -24,9 +24,18 @@ var roleUpgrader = {
             }
         }
         else {
-            var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+            // var sources = creep.room.find(FIND_SOURCES);
+            // if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+            //     creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+            // }
+            let container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: function(structure) {
+                    return structure.structureType == STRUCTURE_CONTAINER &&
+                           structure.store.getUsedCapacity() > 0;
+                }
+            });
+            if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
 	}
