@@ -1,9 +1,21 @@
 var roleMiner = {
 
-    spawn: function(source) {
+    spawn: function() {
+        let sourceCount = Game.rooms["W29N5"].find(FIND_SOURCES).length;
+        let livingMiners = _.filter(Game.creeps, function(creep) {
+            return creep.memory.role == "miner";
+        });
+        let sourceIndex;
+        if (livingMiners.length == 0) {
+            sourceIndex = 0;
+        } else {
+            let livingMinersSource = livingMiners[0].memory.sourceIndex;
+            sourceIndex = (livingMinersSource + 1) % sourceCount;
+        }
+
         let body = [WORK, WORK, WORK, CARRY, MOVE];
         let name = "miner-" + Game.time;
-        Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "miner", sourceIndex: source}});
+        Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "miner", sourceIndex: sourceIndex}});
     },
 
     /** @param {Creep} creep **/

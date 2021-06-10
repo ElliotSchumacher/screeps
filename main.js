@@ -6,17 +6,20 @@ var roleCleaner = require('role.cleaner');
 var roleRepairer = require('role.repairer');
 var _ = require('lodash');
 
-const ROLES = ["harvester", "upgrader", "builder", "miner", "cleaner", "repairer"];
-const ROLE_COUNTS = {
-    "harvester" : 1,
-    "upgrader" : 2,
-    "builder" : 0,
-    "miner" : 2,
-    "cleaner" : 1,
-    "repairer" : 1
+const ROLES = {
+    "harvester" : {"counts": 1, "module": roleHarvester},
+    "upgrader" : {"counts": 2, "module": roleUpgrader},
+    "builder" : {"counts": 0, "module": roleBuilder},
+    "miner" : {"counts": 2, "module": roleMiner},
+    "cleaner" : {"counts": 1, "module": roleCleaner},
+    "repairer" : {"counts": 3, "module": roleRepairer}
 };
 
 module.exports.loop = function () {
+
+    if (Game.cpu.bucket == 10000) {
+        Game.cpu.generatePixel();
+    }
 
     // Remove dead screeps from memmory
     for (let name in Memory.creeps) {
@@ -34,80 +37,26 @@ module.exports.loop = function () {
             //get all creeps
             let creeps = Game.creeps;
             //count number of each role.
-            for (let index = 0; index < ROLES.length; index++) {
-                let role = ROLES[index];
+            for (let role in ROLES) {
+                // console.log("role:" + role);
                 let currentRoleCount  = _.filter(creeps, function(creep) {
                     return creep.memory.role == role;
                 });
                 //if count for role is too small
-                let missingCreeps = ROLE_COUNTS[role] - currentRoleCount.length;
+                let missingCreeps = ROLES[role].counts - currentRoleCount.length;
                 for (let creepAdded = 0; creepAdded < missingCreeps; creepAdded++) {
                     spawn.memory.queue.push(role);
                 }
             }
         } else if (spawn.memory.queue.length > 0) {
             let role = spawn.memory.queue.shift();
-            switch (role) {
-                case "harvester":
-                    roleHarvester.spawn();
-                    break;
-                case "upgrader":
-                    roleUpgrader.spawn();
-                    break;
-                case "builder":
-                    roleBuilder.spawn();
-                    break;
-                case "miner":
-                    let sourceCount = Game.rooms["W29N5"].find(FIND_SOURCES).length;
-                    let livingMiners = _.filter(Game.creeps, function(creep) {
-                        return creep.memory.role == "miner";
-                    });
-                    let sourceIndex;
-                    if (livingMiners.length == 0) {
-                        sourceIndex = 0;
-                    } else {
-                        let livingMinersSource = livingMiners[0].memory.sourceIndex;
-                        sourceIndex = (livingMinersSource + 1) % sourceCount;
-                    }
-                    console.log("SourceIndex: " + sourceIndex);
-                    roleMiner.spawn(sourceIndex);
-                    break;
-                case "cleaner":
-                    roleCleaner.spawn();
-                    break;
-                case "repairer":
-                    roleRepairer.spawn();
-                    break;
-                default:
-                    console.log("An invalid role has been chosen");
-            }
+            ROLES[role].module.spawn();
         }
     }
 
     for(var name in Game.creeps) {
         let creep = Game.creeps[name];
         let role = creep.memory.role;
-        switch (role) {
-            case "harvester":
-                roleHarvester.run(creep);
-                break;
-            case "upgrader":
-                roleUpgrader.run(creep);
-                break;
-            case "builder":
-                roleBuilder.run(creep);
-                break;
-            case "miner":
-                roleMiner.run(creep);
-                break;
-            case "cleaner":
-                roleCleaner.run(creep);
-                break;
-            case "repairer":
-                roleRepairer.run(creep);
-                break;
-            default:
-                console.log("An invalid role has been chosen");
-        }
+        ROLES[role].module.run(creep);
     }
 }
