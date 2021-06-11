@@ -52,16 +52,22 @@ module.exports.loop = function () {
     if (!spawn.spawning) {
         let index = 0;
         let spawnRoleFound = false;
-        while (index < prioritizedRoles.length && spawnRoleFound) {
+        // console.log("NOT SPAWNING");
+        // console.log("prioritizedRoles.length: " + prioritizedRoles.length);
+        while (index < prioritizedRoles.length && !spawnRoleFound) {
             let role = prioritizedRoles[index];
-            if (ROLES[role].module.spawnRequired(room)) {
+            // console.log("role: " + role);
+            // console.log(ROLES[role]);
+            let shouldSpawn = ROLES[role].module.spawnRequired(room);
+            // console.log("shouldSpawn: " + role + ": " + shouldSpawn);
+            if (shouldSpawn) {
                 // TODO: add stage parameter to spawn method call
-                ROLES[role].module.spawn();
+                ROLES[role].module.spawn(room.memory.stage);
                 spawnRoleFound = true;
+                // prioritizedRoles = helper.prioritizeRoles(ROLES);
             }
+            index++;
         }
-    } else {
-        prioritizedRoles = helper.prioritizeRoles(ROLES);
     }
 
     for(var name in Game.creeps) {
