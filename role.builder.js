@@ -1,8 +1,22 @@
 var roleBuilder = {
 
-	spawn: function() {
-        let body = [WORK, CARRY, MOVE];
-        let name = "builder-" + Game.time;
+	spawn: function(stage) {
+        let body;
+        switch (stage) {
+            case 0:
+                body = [WORK, CARRY, MOVE];
+                break;
+            case 1:
+                body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
+                break;
+            case 2:
+                body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+                break;
+            default:
+                body = [WORK, CARRY, MOVE];
+                break;
+        }
+        let name = "builder-" + stage + "-" + Game.time;
         Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "builder"}});
     },
 
@@ -45,13 +59,13 @@ var roleBuilder = {
 
     /** @param {Room} room 
      *  @return {boolean} true if construction site exists and builders are less
-     *                    than 2. false otherwise
+     *                    than 1. false otherwise
      **/
     spawnRequired: function(room) {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "builder"; 
         });
-        return creeps.length < 2 && room.find(FIND_CONSTRUCTION_SITES);
+        return creeps.length < 1 && room.find(FIND_CONSTRUCTION_SITES);
     }
 };
 

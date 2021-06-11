@@ -1,8 +1,18 @@
 var roleCourier = {
 
-    spawn: function() {
-        let body = [WORK, CARRY, MOVE];
-        let name = "courier-" + Game.time;
+    spawn: function(stage) {
+        let body;
+        switch (stage) {
+            case 1:
+                body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
+                break;
+            case 2:
+                body = [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+            default:
+                body = [WORK, CARRY, MOVE];
+                break;
+        }
+        let name = "courier-" + stage + "-" + Game.time;
         Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "courier", refill: true}});
     },
 

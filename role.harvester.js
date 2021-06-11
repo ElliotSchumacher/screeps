@@ -1,6 +1,6 @@
 var roleHarvester = {
 
-    spawn: function() {
+    spawn: function(stage) {
         let body = [WORK, CARRY, MOVE];
         let name = "harvester-" + Game.time;
         Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "harvester"}});

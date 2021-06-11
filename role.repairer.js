@@ -1,8 +1,22 @@
 var roleRepairer = {
 
-	spawn: function() {
-        let body = [WORK, CARRY, MOVE];
-        let name = "repairer-" + Game.time;
+	spawn: function(stage) {
+        let body;
+        switch (stage) {
+            case 0:
+                body = [WORK, CARRY, MOVE];
+                break;
+            case 1:
+                body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
+                break;
+            case 2:
+                body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
+                break;
+            default:
+                body = [WORK, CARRY, MOVE];
+                break;
+        }
+        let name = "repairer-" + stage + "-" + Game.time;
         Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "repairer", refill: true}});
     },
 
@@ -46,7 +60,7 @@ var roleRepairer = {
 	},
 
     /** @param {Room} room 
-     *  @return {boolean} true if no repairer & damage > 0; 1 repairer & damage > 5000.
+     *  @return {boolean} true if no repairer & damage > 0; 1 repairer & damage 10000.
      *                    false otherwise
      **/
     spawnRequired: function(room) {
@@ -74,7 +88,7 @@ var roleRepairer = {
             // console.log(totalDamage);
         }
         console.log("totalDamage: " + totalDamage);
-        let desiredCreepCount = Math.ceil(totalDamage / 5000);
+        let desiredCreepCount = Math.ceil(totalDamage / 10000);
         return desiredCreepCount - creeps.length > 0;
     }
 };

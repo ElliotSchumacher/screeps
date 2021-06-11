@@ -1,8 +1,22 @@
 var roleCleaner = {
 
-    spawn: function() {
-        let body = [WORK, CARRY, MOVE];
-        let name = "cleaner-" + Game.time;
+    spawn: function(stage) {
+        let body;
+        switch (stage) {
+            case 0:
+                body = [WORK, CARRY, MOVE];
+                break;
+            case 1:
+                body = [WORK, CARRY, CARRY, MOVE, MOVE];
+                break;
+            case 2:
+                body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
+                break;
+            default:
+                body = [WORK, CARRY, MOVE];
+                break;
+        }
+        let name = "cleaner-" + stage + "-" + Game.time;
         Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "cleaner", unloading: true}});
     },
 
@@ -13,7 +27,7 @@ var roleCleaner = {
         // console.log("Free Capacity: " + creep.store.getFreeCapacity(RESOURCE_ENERGY));
         let droppedResource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
         // if inventory is full or list of dropped recources is empty
-        if (creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0 || !droppedResource) {
+        if (creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
             // set unloading to true
             creep.memory.unloading = true;
         } else if (creep.memory.unloading && creep.store.getUsedCapacity(RESOURCE_ENERGY) < 5) {
@@ -69,6 +83,7 @@ var roleCleaner = {
      *                    false otherwise
      **/
     spawnRequired: function(room) {
+        return false;
         const searchCriteria = [FIND_DROPPED_RESOURCES, FIND_TOMBSTONES, FIND_RUINS];
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "cleaner"; 

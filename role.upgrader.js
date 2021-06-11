@@ -1,9 +1,23 @@
 var roleUpgrader = {
 
-    spawn: function() {
-        let body = [WORK, CARRY, MOVE];
-        let name = "upgrader-" + Game.time;
-        Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "upgrader"}});
+    spawn: function(stage) {
+        let body;
+        switch (stage) {
+            case 0:
+                body = [WORK, CARRY, MOVE];
+                break;
+            case 1:
+                body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
+                break;
+            case 2:
+                body = [WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
+                break;
+            default:
+                body = [WORK, CARRY, MOVE];
+                break;
+        }
+        let name = "upgrader-" + stage + "-" + Game.time;
+        Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "upgrader", stage: stage}});
     },
 
     /** @param {Creep} creep **/
