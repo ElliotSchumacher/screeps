@@ -8,6 +8,7 @@ var roleCourier = {
                 break;
             case 2:
                 body = [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+                break;
             default:
                 body = [WORK, CARRY, MOVE];
                 break;
