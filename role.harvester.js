@@ -1,5 +1,7 @@
 var roleHarvester = {
 
+    sourceList: [FIND_STRUCTURES, FIND_SOURCES],
+
     spawn: function(stage) {
         let body = [WORK, CARRY, MOVE];
         let name = "harvester-" + Game.time;
@@ -10,9 +12,19 @@ var roleHarvester = {
     run: function(creep) {
 	    if(creep.store.getFreeCapacity() > 0) {
             // harvest recourcez
-            let source = creep.pos.findClosestByRange(FIND_SOURCES);
-            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+            let index = 0;
+            let target;
+            while (!target && index < this.sourceList.length) {
+                let source = this.sourceList[index];
+                let filterFunc = this.getFilter(source);
+                // console.log(source);
+                // console.log(this.getFilter(source));
+                target = creep.pos.findClosestByRange(source, {filter: filterFunc});
+                index = index + 1;
+            }
+            // console.log(target);
+            if (creep.harvest(target) == ERR_NOT_IN_RANGE || creep.withdraw(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
         else {
@@ -41,6 +53,22 @@ var roleHarvester = {
             (creep.memory.role == "courier" || creep.memory.role == "harvester"); 
         });
         return creeps.length == 0;
+    },
+
+    getFilter: function(source) {
+        let filter;
+        switch (source) {
+            case FIND_STRUCTURES:
+                filter = function(structure) {
+                    return structure.structureType == STRUCTURE_CONTAINER && 
+                           structure.store.getUsedCapacity() > 0;
+                }
+                break;
+            default:
+                filter = undefined;
+                break;
+        }
+        return filter;
     }
 };
 
