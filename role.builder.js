@@ -10,7 +10,13 @@ var roleBuilder = {
                 body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
                 break;
             case 2:
-                body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+                body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+                break;
+            case 3:
+                body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+                break;
+            case 4:
+                body = [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                 break;
             default:
                 body = [WORK, CARRY, MOVE];

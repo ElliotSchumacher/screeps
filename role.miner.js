@@ -21,6 +21,12 @@ var roleMiner = {
             case 2:
                 body = [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
                 break;
+            case 3:
+                body = [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
+                break;
+            case 4:
+                body = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE];
+                break;
             default:
                 body = [WORK, WORK, WORK, CARRY, MOVE];
                 break;

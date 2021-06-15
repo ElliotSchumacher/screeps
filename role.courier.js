@@ -9,6 +9,12 @@ var roleCourier = {
             case 2:
                 body = [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                 break;
+            case 3: 
+                body = [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+                break;
+            case 4: 
+                body = [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+                break;
             default:
                 body = [WORK, CARRY, MOVE];
                 break;
@@ -69,7 +75,7 @@ var roleCourier = {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "courier"; 
         });
-        return creeps.length < room.memory.stage;
+        return creeps.length < Math.ceil(room.memory.stage / 2);
     }
 };
 
