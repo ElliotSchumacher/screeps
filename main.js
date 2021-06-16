@@ -5,6 +5,7 @@ var roleMiner = require('role.miner');
 var roleCleaner = require('role.cleaner');
 var roleRepairer = require('role.repairer');
 var roleCourier = require('role.courier');
+var roleZerg = require('role.zerg');
 var _ = require('lodash');
 var helper = require("helper");
 
@@ -16,7 +17,8 @@ const ROLES = {
     "miner" : {"counts": 2, "priority": 2, "module": roleMiner},
     "cleaner" : {"counts": 0, "priority": 6, "module": roleCleaner},
     "repairer" : {"counts": 1, "priority": 2, "module": roleRepairer},
-    "courier" : {"counts": 1, "priority": 3, "module": roleCourier}
+    "courier" : {"counts": 1, "priority": 3, "module": roleCourier},
+    "zerg" : {"counts": 5, "priority": 1, "module": roleZerg}
 };
 
 let prioritizedRoles;
