@@ -71,7 +71,7 @@ var roleBuilder = {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "builder"; 
         });
-        return creeps.length < 1 && room.find(FIND_CONSTRUCTION_SITES);
+        return creeps.length < 1 && (room.find(FIND_CONSTRUCTION_SITES).length > 0);
     }
 };
 
