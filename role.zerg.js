@@ -33,6 +33,15 @@ var roleZerg = {
             if (creep.attack(enemy) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(enemy);
             }
+        } else {
+            let idleFlags = creep.room.find(FIND_FLAGS, {
+                filter: function(flag) {
+                    return flag.name == "idle";
+                }
+            });
+            if(idleFlags.length > 0) {
+                creep.moveTo(idleFlag[0]);
+            }
         }
 	},
 
