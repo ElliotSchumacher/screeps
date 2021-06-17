@@ -32,14 +32,15 @@ var roleCourier = {
         }
 
         if (creep.memory.refill) {
-            let container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            let warehouse = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: function(structure) {
-                    return structure.structureType == STRUCTURE_CONTAINER &&
+                    return (structure.structureType == STRUCTURE_CONTAINER ||
+                            structure.structureType == STRUCTURE_STORAGE) &&
                            structure.store.getUsedCapacity() > 0;
                 }
             });
-            if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(warehouse, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
             let target = creep.pos.findClosestByRange(FIND_STRUCTURES, {

@@ -46,14 +46,15 @@ var roleMiner = {
             }
         }
         if (creep.store.getUsedCapacity(RESOURCE_ENERGY) > 5) {
-            let containers = creep.pos.findInRange(FIND_STRUCTURES, 3, {
+            let warehouses = creep.pos.findInRange(FIND_STRUCTURES, 3, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_CONTAINER &&
+                    return (structure.structureType == STRUCTURE_CONTAINER ||
+                            structure.structureType == STRUCTURE_STORAGE) &&
                            structure.store.getFreeCapacity() > 0;
                 }
             });
-            if (containers[0] && creep.transfer(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (warehouses[0] && creep.transfer(warehouses[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(warehouses[0], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
 	},
