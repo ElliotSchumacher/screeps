@@ -40,7 +40,7 @@ var roleZerg = {
                 }
             });
             if(idleFlags.length > 0) {
-                creep.moveTo(idleFlag[0]);
+                creep.moveTo(idleFlags[0]);
             }
         }
 	},
