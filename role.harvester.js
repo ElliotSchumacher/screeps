@@ -60,7 +60,8 @@ var roleHarvester = {
         switch (source) {
             case FIND_STRUCTURES:
                 filter = function(structure) {
-                    return structure.structureType == STRUCTURE_CONTAINER && 
+                    return (structure.structureType == STRUCTURE_CONTAINER ||
+                            structure.structureType == STRUCTURE_STORAGE) && 
                            structure.store.getUsedCapacity() > 0;
                 }
                 break;
