@@ -36,7 +36,6 @@ var roleRepairer = {
         }
 
         if (creep.memory.refill) {
-            //find closest container or source[0]
             let warehouse = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: function(structure) {
                     return (structure.structureType == STRUCTURE_CONTAINER ||
@@ -44,8 +43,6 @@ var roleRepairer = {
                             structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
                 }
             });
-            // fill up on energy
-            // container = Game.getObjectById("60bee1bc2f8a005467e46983");
             if (warehouse) {
                 if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(warehouse, {visualizePathStyle: {stroke: '#ffaa00'}});
@@ -84,15 +81,9 @@ var roleRepairer = {
             }
         });
         let totalDamage = 0;
-        // console.log(damagedStructures);
-        // console.log(damagedStructures.length);
-        // console.log(damagedStructures[0].hitsMax - damagedStructures[0].hits);
-        // console.log(totalDamage);
         for (let index = 0; index < damagedStructures.length; index++) {
             let structure = damagedStructures[index];
-            // console.log(structure);
             totalDamage = totalDamage + (structure.hitsMax - structure.hits);
-            // console.log(totalDamage);
         }
         console.log("totalDamage: " + totalDamage);
         let desiredCreepCount = Math.ceil(totalDamage / 10000);

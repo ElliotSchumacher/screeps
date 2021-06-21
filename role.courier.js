@@ -76,7 +76,8 @@ var roleCourier = {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "courier"; 
         });
-        return creeps.length < Math.ceil(room.memory.stage / 2);
+        return creeps.length < 1;
+        // return creeps.length < Math.ceil(room.memory.stage / 2);
     }
 };
 

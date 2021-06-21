@@ -29,19 +29,13 @@ var roleCleaner = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
-        // console.log("Used Capacity: " + creep.store.getUsedCapacity(RESOURCE_ENERGY));
-        // console.log("Free Capacity: " + creep.store.getFreeCapacity(RESOURCE_ENERGY));
         let droppedResource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
         // if inventory is full or list of dropped recources is empty
         if (creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
-            // set unloading to true
             creep.memory.unloading = true;
         } else if (creep.memory.unloading && creep.store.getUsedCapacity(RESOURCE_ENERGY) < 5) {
-        // else if unloading is true and inventory is empty
-            // set unloading to false
             creep.memory.unloading = false;
         }
-        // if unloading
         if (creep.memory.unloading) { 
             // travel to a spawn, extension or tower and transfer it to that structure
             let structure = creep.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -58,8 +52,6 @@ var roleCleaner = {
                 creep.moveTo(structure, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
-        // else 
-            // create list of dropped recourses
             let resource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
             let ruin = creep.pos.findClosestByRange(FIND_RUINS, {
                 filter: function(ruin) {
@@ -67,9 +59,6 @@ var roleCleaner = {
                 }
             });
             if (resource) {
-            // if list exists
-                // find closest dropped resource
-                // harvest it
                 if (creep.pickup(resource) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(resource, {visualizePathStyle: {stroke: '#ffaa00'}});
                 }
@@ -78,8 +67,6 @@ var roleCleaner = {
                     creep.moveTo(ruin, {visualizePathStyle: {stroke: '#ffaa00'}});
                 }
             } else {
-            // else // no dropped recouce
-                //move to spawn
                 creep.moveTo(Game.spawns["Spawn1"], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }

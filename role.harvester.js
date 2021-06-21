@@ -11,18 +11,14 @@ var roleHarvester = {
     /** @param {Creep} creep **/
     run: function(creep) {
 	    if(creep.store.getFreeCapacity() > 0) {
-            // harvest recourcez
             let index = 0;
             let target;
             while (!target && index < this.sourceList.length) {
                 let source = this.sourceList[index];
                 let filterFunc = this.getFilter(source);
-                // console.log(source);
-                // console.log(this.getFilter(source));
                 target = creep.pos.findClosestByRange(source, {filter: filterFunc});
                 index = index + 1;
             }
-            // console.log(target);
             if (creep.harvest(target) == ERR_NOT_IN_RANGE || creep.withdraw(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
