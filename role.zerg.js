@@ -15,7 +15,7 @@ var roleZerg = {
             case 3:
                 body = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK];
                 break;
-            case 4:
+            case 4: case 5: case 6:
                 body = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK];
                 break;
             default:

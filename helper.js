@@ -6,7 +6,7 @@ var helper = {
         });
         console.log(sortedRoles);
         return sortedRoles;
-    },
+    }
 };
 
 module.exports = helper;

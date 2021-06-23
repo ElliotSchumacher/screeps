@@ -15,7 +15,7 @@ var roleCleaner = {
             case 3: 
                 body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
                 break;
-            case 4: 
+            case 4: case 5: case 6: 
                 body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
                 break;
             default:
