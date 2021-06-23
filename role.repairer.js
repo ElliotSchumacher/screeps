@@ -1,5 +1,7 @@
 var roleRepairer = {
 
+    DAMAGE_CHECK_INTERVAL:80,
+
 	spawn: function(stage) {
         let body;
         switch (stage) {
@@ -51,14 +53,29 @@ var roleRepairer = {
                 creep.moveTo(Game.spawns["Spawn1"], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
-            let damagedStructure = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            let damagedStructures = creep.room.find(FIND_STRUCTURES, {
                 filter: function(structure) {
-                    return (structure.hitsMax - structure.hits > 0) && 
-                            structure.structureType != STRUCTURE_WALL;
+                    return structure.hitsMax - structure.hits > 0;
                 }
             });
-            if (creep.repair(damagedStructure) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(damagedStructure, {visualizePathStyle: {stroke: '#ffaa00'}});
+            damagedStructures = damagedStructures.sort(function(struct1, struct2) {
+                let weight1 = struct1.hits + 40 * creep.pos.getRangeTo(struct1);
+                let weight2 = struct2.hits + 40 * creep.pos.getRangeTo(struct2);
+                return weight1 - weight2;
+            });
+            if (damagedStructures.length > 0) {
+                if (creep.repair(damagedStructures[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(damagedStructures[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                }
+            } else {
+                let idleFlags = creep.room.find(FIND_FLAGS, {
+                    filter: function(flag) {
+                        return flag.name == "idle";
+                }
+            });
+                if(idleFlags.length > 0) {
+                    creep.moveTo(idleFlags[0]);
+                }
             }
         }
 	},
@@ -71,9 +88,6 @@ var roleRepairer = {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "repairer"; 
         });
-        if (creeps.length > 1) {
-            return false;
-        }
         let damagedStructures = room.find(FIND_STRUCTURES, {
             filter: function (structure) {
                 return (structure.hitsMax - structure.hits > 0) && 
@@ -85,9 +99,23 @@ var roleRepairer = {
             let structure = damagedStructures[index];
             totalDamage = totalDamage + (structure.hitsMax - structure.hits);
         }
-        console.log("totalDamage: " + totalDamage);
-        let desiredCreepCount = Math.ceil(totalDamage / 10000);
-        return desiredCreepCount - creeps.length > 0;
+        // console.log("totalDamage: " + totalDamage);
+        let lastDamageCheckTicks = room.memory.lastDamageCheckTicks;
+        let lastTotalDamage = room.memory.lastTotalDamage;
+        let currentTicks = Game.time;
+        if (!lastDamageCheckTicks || !lastTotalDamage) {
+            room.memory.lastDamageCheckTicks = currentTicks;
+            room.memory.lastTotalDamage = totalDamage;
+            return false;
+        } else if (currentTicks - lastDamageCheckTicks > this.DAMAGE_CHECK_INTERVAL) {
+            console.log("lastTotalDamage: " + lastTotalDamage);
+            console.log("totalDamage: " + totalDamage);
+            room.memory.lastDamageCheckTicks = currentTicks;
+            room.memory.lastTotalDamage = totalDamage;
+            return totalDamage > lastTotalDamage && creeps.length < 4;
+        } else {
+            return false;
+        }
     }
 };
 
