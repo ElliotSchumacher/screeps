@@ -32,13 +32,20 @@ var roleCourier = {
         }
 
         if (creep.memory.refill) {
-            let warehouse = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: function(structure) {
-                    return (structure.structureType == STRUCTURE_CONTAINER ||
-                            structure.structureType == STRUCTURE_STORAGE) &&
-                           structure.store.getUsedCapacity() > 0;
-                }
-            });
+            let usedCapacityAmounts = [200, 150, 100, 50, 0];
+            let index = 0;
+            let warehouse;
+            while (!warehouse && index < usedCapacityAmounts.length) {
+                warehouse = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                    filter: function(structure) {
+                        return (structure.structureType == STRUCTURE_CONTAINER ||
+                                structure.structureType == STRUCTURE_STORAGE) &&
+                                structure.store.getUsedCapacity() > usedCapacityAmounts[index];
+                    }
+                });
+                index++;
+            }
+
             if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(warehouse, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
@@ -76,7 +83,7 @@ var roleCourier = {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "courier"; 
         });
-        return creeps.length < 1;
+        return creeps.length < 2;
         // return creeps.length < Math.ceil(room.memory.stage / 2);
     }
 };
