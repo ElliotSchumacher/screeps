@@ -6,6 +6,7 @@ var roleCleaner = require('role.cleaner');
 var roleRepairer = require('role.repairer');
 var roleCourier = require('role.courier');
 var roleZerg = require('role.zerg');
+var structureTower = require('structure.tower');
 var _ = require('lodash');
 var helper = require("helper");
 
@@ -39,6 +40,7 @@ module.exports.loop = function () {
             console.log("Deleted creep memory with name " + name);
         }
     }
+
     // Set room stage
     let room = Game.rooms[ROOM];
     let extensionCount = room.find(FIND_MY_STRUCTURES, {
@@ -48,6 +50,17 @@ module.exports.loop = function () {
     // console.log("extensionCount: " + extensionCount);
     // console.log("stage: " + stage);
     room.memory.stage = stage;
+
+    let enemies = Game.rooms[ROOM].find(FIND_HOSTILE_CREEPS);
+    let towers = Game.rooms[ROOM].find(FIND_MY_STRUCTURES, {
+        filter: function(structure) {
+            return structure.structureType == STRUCTURE_TOWER &&
+                    structure.store.getUsedCapacity(RESOURCE_ENERGY) > 10;
+        }
+    });
+    for (let index = 0; index < towers.length; index++) {
+        structureTower.run(towers[index], enemies);
+    };
 
     let spawn = Game.spawns["Spawn1"];
     // if not already spawning
