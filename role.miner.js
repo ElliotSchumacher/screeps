@@ -53,6 +53,10 @@ var roleMiner = {
                            structure.store.getFreeCapacity() > 0;
                 }
             });
+            warehouses = warehouses.sort(function(struct1, struct2) {
+                let percentFull1 = struct1.store.getUsedCapacity(RESOURCE_ENERGY)
+                return structure1.store.getCapacity(RESOURCE_ENERGY)
+            });
             if (warehouses[0] && creep.transfer(warehouses[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(warehouses[0], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
