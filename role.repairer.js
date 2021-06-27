@@ -112,7 +112,7 @@ var roleRepairer = {
             console.log("totalDamage: " + totalDamage);
             room.memory.lastDamageCheckTicks = currentTicks;
             room.memory.lastTotalDamage = totalDamage;
-            return totalDamage > lastTotalDamage && creeps.length < 4;
+            return (totalDamage > lastTotalDamage && creeps.length < 4) || creeps.length < 1;
         } else {
             return false;
         }
