@@ -32,33 +32,68 @@ var roleMiner = {
                 break;
         }
         let name = "miner-" + stage + "-" + Game.time;
-        Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "miner", sourceIndex: sourceIndex}});
+        Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "miner",
+                                                      sourceIndex: sourceIndex, link: false}});
     },
 
     /** @param {Creep} creep **/
     run: function(creep) {
 
-        let sources = creep.room.find(FIND_SOURCES);
-        let source = sources[creep.memory.sourceIndex];
+        let flags = creep.room.find(FIND_FLAGS, {
+            filter: function (flag) {
+                return flag.name == "miner" + creep.memory.sourceIndex;
+            }
+        });
+
         if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+            let sources = creep.room.find(FIND_SOURCES);
+            let source = sources[creep.memory.sourceIndex];
             if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                creep.moveTo(flags[0], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
+
         if (creep.store.getUsedCapacity(RESOURCE_ENERGY) > 5) {
-            let warehouses = creep.pos.findInRange(FIND_STRUCTURES, 3, {
+            let warehouses = creep.pos.findInRange(FIND_STRUCTURES, 1, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_CONTAINER ||
                             structure.structureType == STRUCTURE_STORAGE) &&
                            structure.store.getFreeCapacity() > 0;
                 }
             });
-            warehouses = warehouses.sort(function(struct1, struct2) {
-                let percentFull1 = struct1.store.getUsedCapacity(RESOURCE_ENERGY)
-                return structure1.store.getCapacity(RESOURCE_ENERGY)
-            });
-            if (warehouses[0] && creep.transfer(warehouses[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(warehouses[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (warehouses.length > 0) {
+                warehouses = warehouses.sort(function(struct1, struct2) {
+                    let portionFull1 = struct1.store.getUsedCapacity(RESOURCE_ENERGY) / 
+                                    struct1.store.getCapacity(RESOURCE_ENERGY);
+                    let portionFull2 = struct2.store.getUsedCapacity(RESOURCE_ENERGY) /
+                                    struct2.store.getCapacity(RESOURCE_ENERGY);
+                    return portionFull1 - portionFull2;
+                });
+                let lowestWarehousePortion = warehouses[0].store.getUsedCapacity(RESOURCE_ENERGY) /
+                                            warehouses[0].store.getCapacity(RESOURCE_ENERGY);
+                if (lowestWarehousePortion > 0.9) {
+                    let links = creep.pos.findInRange(FIND_STRUCTURES, 1, {
+                        filter: function (structure) {
+                            return structure.structureType == STRUCTURE_LINK;
+                        }
+                    });
+                    if (links.length > 0 ) {
+                        if (creep.memory.link) {
+                            if (creep.transfer(links[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(flags[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                            }
+                        } else {
+                            if (warehouses[0] && creep.transfer(warehouses[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(warehouses[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                            }
+                        }
+                        creep.memory.link = !creep.memory.link;
+                    }
+                } else {
+                    if (warehouses[0] && creep.transfer(warehouses[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(warehouses[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                    }
+                }
             }
         }
 	},
