@@ -1,4 +1,3 @@
-
 // Spawn harvester creep
 Game.spawns["Spawn1"].spawnCreep([WORK, CARRY, MOVE], "harvester-" + Game.time, {memory: {role: "harvester"}});
 // Spawn upgrader creep
@@ -14,6 +13,13 @@ let linkId = "60d56941e23798bd2b543fdb";
 let recievingLinkId = "60d59f94803fd459a4af7d44";
 Game.getObjectById(linkId).room.memory.links[linkId] = {};
 Game.getObjectById(linkId).room.memory.links[linkId].targetLink = recievingLinkId;
+
+// Set a deposit location
+Memory.deposits = [];
+Memory.deposits[0] = {id: "60e37a59f2f3bc0ef7d80ea5", resourceType: RESOURCE_SILICON};
+
+// Set home room
+Memory.homeRoom = "W29N5";
 
 // Prints total damage for a room
 let room = Game.rooms["W29N5"];

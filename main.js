@@ -6,6 +6,7 @@ var roleCleaner = require('role.cleaner');
 var roleRepairer = require('role.repairer');
 var roleCourier = require('role.courier');
 var roleZerg = require('role.zerg');
+var roleRetriever = require('role.retriever');
 var structureTower = require('structure.tower');
 var structureLink = require('structure.link');
 var _ = require('lodash');
@@ -13,6 +14,16 @@ var helper = require("helper");
 
 const ROOM = "W29N5";
 const ROLES = {
+    "harvester": {"counts": 0, "priority": 0, "module": roleHarvester},
+    "upgrader": {"counts": 2, "priority": 5, "module": roleUpgrader},
+    "builder": {"counts": 1, "priority": 4, "module": roleBuilder},
+    "miner": {"counts": 2, "priority": 2, "module": roleMiner},
+    "cleaner": {"counts": 0, "priority": 6, "module": roleCleaner},
+    "repairer": {"counts": 1, "priority": 2, "module": roleRepairer},
+    "courier": {"counts": 1, "priority": 3, "module": roleCourier},
+    "zerg": {"counts": 5, "priority": 1, "module": roleZerg},
+    "retriever": {"counts": 1, "priority": 7, "module": roleRetriever}
+};
 const STRUCTURES = {
     "tower" : {"module" : structureTower},
     "link" : {"module" : structureLink}
