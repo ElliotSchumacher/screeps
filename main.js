@@ -7,19 +7,15 @@ var roleRepairer = require('role.repairer');
 var roleCourier = require('role.courier');
 var roleZerg = require('role.zerg');
 var structureTower = require('structure.tower');
+var structureLink = require('structure.link');
 var _ = require('lodash');
 var helper = require("helper");
 
 const ROOM = "W29N5";
 const ROLES = {
-    "harvester" : {"counts": 0, "priority": 0, "module": roleHarvester},
-    "upgrader" : {"counts": 2, "priority": 5, "module": roleUpgrader},
-    "builder" : {"counts": 1, "priority": 4, "module": roleBuilder},
-    "miner" : {"counts": 2, "priority": 2, "module": roleMiner},
-    "cleaner" : {"counts": 0, "priority": 6, "module": roleCleaner},
-    "repairer" : {"counts": 1, "priority": 2, "module": roleRepairer},
-    "courier" : {"counts": 1, "priority": 3, "module": roleCourier},
-    "zerg" : {"counts": 5, "priority": 1, "module": roleZerg}
+const STRUCTURES = {
+    "tower" : {"module" : structureTower},
+    "link" : {"module" : structureLink}
 };
 
 let prioritizedRoles;
@@ -52,14 +48,15 @@ module.exports.loop = function () {
     room.memory.stage = stage;
 
     let enemies = Game.rooms[ROOM].find(FIND_HOSTILE_CREEPS);
-    let towers = Game.rooms[ROOM].find(FIND_MY_STRUCTURES, {
+    let structures = Game.rooms[ROOM].find(FIND_MY_STRUCTURES, {
         filter: function(structure) {
-            return structure.structureType == STRUCTURE_TOWER &&
+            return (structure.structureType == STRUCTURE_TOWER ||
+                    structure.structureType == STRUCTURE_LINK) &&
                     structure.store.getUsedCapacity(RESOURCE_ENERGY) > 10;
         }
     });
-    for (let index = 0; index < towers.length; index++) {
-        structureTower.run(towers[index], enemies);
+    for (let index = 0; index < structures.length; index++) {
+        STRUCTURES[structures[index].structureType].module.run(structures[index], enemies);
     };
 
     let spawn = Game.spawns["Spawn1"];

@@ -52,8 +52,9 @@ var roleUpgrader = {
         else {
             let warehouse = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: function(structure) {
-                    return (structure.structureType == STRUCTURE_STORAGE) &&
-                            structure.store.getUsedCapacity() > 0;
+                    return (structure.structureType == STRUCTURE_STORAGE || 
+                            structure.structureType == STRUCTURE_LINK) &&
+                            structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
                 }
             });
             if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -69,7 +70,18 @@ var roleUpgrader = {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "upgrader"; 
         });
-        return creeps.length < 2;
+        let links = room.find(FIND_MY_STRUCTURES, {
+            filter: function(structure) {
+                return structure.structureType == STRUCTURE_LINK;
+            }
+        });
+        let desiredCount;
+        if (links.length == 0) {
+            desiredCount = 2;
+        } else {
+            desiredCount = 1;
+        }
+        return creeps.length < desiredCount;
     }
 };
 

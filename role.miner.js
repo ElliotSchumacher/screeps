@@ -72,28 +72,21 @@ var roleMiner = {
                 let lowestWarehousePortion = warehouses[0].store.getUsedCapacity(RESOURCE_ENERGY) /
                                             warehouses[0].store.getCapacity(RESOURCE_ENERGY);
                 if (lowestWarehousePortion > 0.9) {
-                    let links = creep.pos.findInRange(FIND_STRUCTURES, 1, {
-                        filter: function (structure) {
-                            return structure.structureType == STRUCTURE_LINK;
+                    if (creep.memory.link) {
+                        this.transferToLink(creep);
+                    } else {
+                        if (warehouses[0] && creep.transfer(warehouses[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(warehouses[0], {visualizePathStyle: {stroke: '#ffaa00'}});
                         }
-                    });
-                    if (links.length > 0 ) {
-                        if (creep.memory.link) {
-                            if (creep.transfer(links[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                                creep.moveTo(flags[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-                            }
-                        } else {
-                            if (warehouses[0] && creep.transfer(warehouses[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                                creep.moveTo(warehouses[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-                            }
-                        }
-                        creep.memory.link = !creep.memory.link;
                     }
+                    creep.memory.link = !creep.memory.link;
                 } else {
                     if (warehouses[0] && creep.transfer(warehouses[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(warehouses[0], {visualizePathStyle: {stroke: '#ffaa00'}});
                     }
                 }
+            } else {
+                this.transferToLink(creep);
             }
         }
 	},
@@ -108,6 +101,19 @@ var roleMiner = {
         });
         let sources = room.find(FIND_SOURCES);
         return creeps.length < sources.length && room.memory.stage > 0;
+    },
+
+    transferToLink: function(creep) {
+        let links = creep.pos.findInRange(FIND_STRUCTURES, 1, {
+            filter: function (structure) {
+                return structure.structureType == STRUCTURE_LINK;
+            }
+        });
+        let status = creep.transfer(links[0], RESOURCE_ENERGY)
+        if (status == ERR_NOT_IN_RANGE) {
+            creep.moveTo(flags[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+        }
+        return status == OK;
     }
 };
 

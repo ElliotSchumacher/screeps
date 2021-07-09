@@ -5,6 +5,16 @@ Game.spawns["Spawn1"].spawnCreep([WORK, CARRY, MOVE], "harvester-" + Game.time, 
 Game.spawns["Spawn1"].spawnCreep([WORK, CARRY, MOVE], "upgrader-" + Game.time, {memory: {role: "upgrader"}});
 // Spawn builder creep
 Game.spawns["Spawn1"].spawnCreep([WORK, CARRY, MOVE], "builder-" + Game.time, {memory: {role: "builder"}});
+
+// Setup links in memory
+let linkId = "60dc1767ec9a30f246663a1f";
+Game.getObjectById(linkId).room.memory.links = {};
+//sets link with given Id to have a recieving link
+let linkId = "60d56941e23798bd2b543fdb";
+let recievingLinkId = "60d59f94803fd459a4af7d44";
+Game.getObjectById(linkId).room.memory.links[linkId] = {};
+Game.getObjectById(linkId).room.memory.links[linkId].targetLink = recievingLinkId;
+
 // Prints total damage for a room
 let room = Game.rooms["W29N5"];
 let damagedStructures = room.find(FIND_STRUCTURES, {
@@ -25,7 +35,7 @@ for (let index = 0; index < damagedStructures.length; index++) {
     console.log(totalDamage);
 }
 console.log("totalDamage: " + totalDamage);
-let desiredCreepCount = Math.ceil(totalDamage / 5000);
+
 // Prints out all roles
 const ROLES = {
     "harvester" : {"counts": 0, "priority": 0},
@@ -39,6 +49,7 @@ const ROLES = {
 for (let role in ROLES) {
     console.log(role);
 }
+
 //Sorts roles by priority
 const ROLES = {
     "harvester" : {"counts": 0, "priority": 0},
