@@ -1,32 +1,41 @@
 var roleUpgrader = {
 
-    spawn: function(stage) {
+    spawn: function(stage, room) {
         let body;
-        switch (stage) {
-            case 0:
-                body = [WORK, CARRY, MOVE];
-                break;
-            case 1:
-                body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
-                break;
-            case 2:
-                body = [WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
-                break;
-            case 3:
-                body = [WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
-                break;
-            case 4:
-                body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
-                break;
-            case 5:
-                body = [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
-                break;
-            case 6:
-                body = [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
-                break;
-            default:
-                body = [WORK, CARRY, MOVE];
-                break;
+        let links = room.find(FIND_MY_STRUCTURES, {
+            filter: function(structure) {
+                return structure.structureType == STRUCTURE_LINK;
+            }
+        });
+        if (links.length < 2) {
+            switch (stage) {
+                case 0:
+                    body = [WORK, CARRY, MOVE];
+                    break;
+                case 1:
+                    body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
+                    break;
+                case 2:
+                    body = [WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
+                    break;
+                case 3:
+                    body = [WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
+                    break;
+                case 4:
+                    body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+                    break;
+                case 5:
+                    body = [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+                    break;
+                case 6:
+                    body = [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+                    break;
+                default:
+                    body = [WORK, CARRY, MOVE];
+                    break;
+            }
+        } else {
+            body = [WORK, CARRY, MOVE];
         }
         let name = "upgrader-" + stage + "-" + Game.time;
         Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "upgrader", stage: stage}});
@@ -76,7 +85,7 @@ var roleUpgrader = {
             }
         });
         let desiredCount;
-        if (links.length == 0) {
+        if (links.length < 2) {
             desiredCount = 2;
         } else {
             desiredCount = 1;

@@ -85,7 +85,7 @@ module.exports.loop = function () {
             // console.log("shouldSpawn: " + role + ": " + shouldSpawn);
             if (shouldSpawn) {
                 // TODO: add stage parameter to spawn method call
-                ROLES[role].module.spawn(room.memory.stage);
+                ROLES[role].module.spawn(room.memory.stage, room);
                 spawnRoleFound = true;
                 // prioritizedRoles = helper.prioritizeRoles(ROLES);
             }
