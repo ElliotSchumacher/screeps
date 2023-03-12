@@ -1,7 +1,8 @@
 var roleMiner = {
 
     spawn: function(stage) {
-        let sourceCount = Game.rooms["W29N5"].find(FIND_SOURCES).length;
+        let homeRoomName = Memory.homeRoom
+        let sourceCount = Game.rooms[homeRoomName].find(FIND_SOURCES).length;
         let livingMiners = _.filter(Game.creeps, function(creep) {
             return creep.memory.role == "miner";
         });
@@ -16,7 +17,7 @@ var roleMiner = {
         let body;
         switch (stage) {
             case 1:
-                body = [WORK, WORK, WORK, CARRY, MOVE];
+                body = [WORK, WORK, WORK, WORK, CARRY, MOVE];
                 break;
             case 2:
                 body = [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
@@ -95,12 +96,22 @@ var roleMiner = {
      *  @return {boolean} true if number of miners is less than number of sources.
      *                    false otherwise
      **/
+    // TODO: Instead of checking the number of warehouses in the room, only check how many
+    // flags have warehouses adjacent to them. This will prevent miners from being spawned to
+    // harvest sources that don't have any adjacent containers preventing idle miners.
     spawnRequired: function(room) {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "miner"; 
         });
         let sources = room.find(FIND_SOURCES);
-        return creeps.length < sources.length && room.memory.stage > 0;
+        let warehouses = room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_CONTAINER ||
+                    structure.structureType == STRUCTURE_STORAGE;
+            }
+        });
+        let warehouseCount = warehouses.length; 
+        return creeps.length < sources.length && room.memory.stage > 0 && creeps.length < warehouseCount;
     },
 
     transferToLink: function(creep) {
