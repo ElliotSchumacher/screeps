@@ -7,7 +7,7 @@ var roleBuilder = {
                 body = [WORK, CARRY, MOVE];
                 break;
             case 1:
-                body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
+                body = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE];
                 break;
             case 2:
                 body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
@@ -19,7 +19,7 @@ var roleBuilder = {
                 body = [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                 break;
             case 5: case 6:
-                body = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+                body = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                 break;
             default:
                 body = [WORK, CARRY, MOVE];
@@ -56,8 +56,16 @@ var roleBuilder = {
                            structure.store.getUsedCapacity() > 0;
                 }
             });
-            if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(warehouse, {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (warehouse) {
+                if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(warehouse, {visualizePathStyle: {stroke: '#ffaa00'}});
+                }
+            } else {
+                // let source = creep.pos.findClosestByRange(FIND_SOURCES);
+                let source = creep.pos.findClosestByPath(FIND_SOURCES);
+                if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                }
             }
         }
 	},
@@ -70,7 +78,7 @@ var roleBuilder = {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "builder"; 
         });
-        return creeps.length < 1 && (room.find(FIND_CONSTRUCTION_SITES).length > 0);
+        return creeps.length < 2 && (room.find(FIND_CONSTRUCTION_SITES).length > 0);
     }
 };
 
