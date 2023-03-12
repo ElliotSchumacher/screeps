@@ -7,12 +7,16 @@ var roleRepairer = require('role.repairer');
 var roleCourier = require('role.courier');
 var roleZerg = require('role.zerg');
 var roleRetriever = require('role.retriever');
+var roleExtractor = require('role.extractor');
 var structureTower = require('structure.tower');
 var structureLink = require('structure.link');
+var structureTerminal = require('structure.terminal');
 var _ = require('lodash');
 var helper = require("helper");
 
-const ROOM = "W29N5";
+// Possible good room "W8S41"
+const ROOM = "E54N9";
+Memory.homeRoom = ROOM;
 const ROLES = {
     "harvester": {"counts": 0, "priority": 0, "module": roleHarvester},
     "upgrader": {"counts": 2, "priority": 5, "module": roleUpgrader},
@@ -22,11 +26,13 @@ const ROLES = {
     "repairer": {"counts": 1, "priority": 2, "module": roleRepairer},
     "courier": {"counts": 1, "priority": 3, "module": roleCourier},
     "zerg": {"counts": 5, "priority": 1, "module": roleZerg},
-    "retriever": {"counts": 1, "priority": 7, "module": roleRetriever}
+    "retriever": {"counts": 1, "priority": 7, "module": roleRetriever},
+    "extractor": {"counts": 1, "priority": 6, "module": roleExtractor}
 };
 const STRUCTURES = {
     "tower" : {"module" : structureTower},
-    "link" : {"module" : structureLink}
+    "link" : {"module" : structureLink},
+    "terminal" : {"module" : structureTerminal}
 };
 
 let prioritizedRoles;
@@ -35,6 +41,10 @@ module.exports.loop = function () {
     // Perform setup commands
     if (!prioritizedRoles) {
         prioritizedRoles = helper.prioritizeRoles(ROLES);
+    }
+    // Print amount in cpu bucket
+    if (Game.time % 60 == 0) {
+        console.log("CPU bucket: " + Game.cpu.bucket);
     }
     // Generate pixels
     if (Game.cpu.bucket == 10000) {
@@ -62,7 +72,8 @@ module.exports.loop = function () {
     let structures = Game.rooms[ROOM].find(FIND_MY_STRUCTURES, {
         filter: function(structure) {
             return (structure.structureType == STRUCTURE_TOWER ||
-                    structure.structureType == STRUCTURE_LINK) &&
+                    structure.structureType == STRUCTURE_LINK ||
+                    structure.structureType == STRUCTURE_TERMINAL) &&
                     structure.store.getUsedCapacity(RESOURCE_ENERGY) > 10;
         }
     });
@@ -84,7 +95,6 @@ module.exports.loop = function () {
             let shouldSpawn = ROLES[role].module.spawnRequired(room);
             // console.log("shouldSpawn: " + role + ": " + shouldSpawn);
             if (shouldSpawn) {
-                // TODO: add stage parameter to spawn method call
                 ROLES[role].module.spawn(room.memory.stage, room);
                 spawnRoleFound = true;
                 // prioritizedRoles = helper.prioritizeRoles(ROLES);
@@ -93,7 +103,7 @@ module.exports.loop = function () {
         }
     }
 
-    for(var name in Game.creeps) {
+    for(let name in Game.creeps) {
         let creep = Game.creeps[name];
         let role = creep.memory.role;
         ROLES[role].module.run(creep);
