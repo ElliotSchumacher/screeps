@@ -16,7 +16,8 @@ var roleHarvester = {
             while (!target && index < this.sourceList.length) {
                 let source = this.sourceList[index];
                 let filterFunc = this.getFilter(source);
-                target = creep.pos.findClosestByRange(source, {filter: filterFunc});
+                // target = creep.pos.findClosestByRange(source, {filter: filterFunc});
+                target = creep.pos.findClosestByPath(source, {filter: filterFunc});
                 index = index + 1;
             }
             if (creep.harvest(target) == ERR_NOT_IN_RANGE || creep.withdraw(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
