@@ -53,8 +53,8 @@ var roleRepairer = {
                 }
             });
             damagedStructures = damagedStructures.sort(function(struct1, struct2) {
-                let weight1 = struct1.hits + 40 * creep.pos.getRangeTo(struct1);
-                let weight2 = struct2.hits + 40 * creep.pos.getRangeTo(struct2);
+                let weight1 = struct1.hits + 45 * creep.pos.getRangeTo(struct1);
+                let weight2 = struct2.hits + 45 * creep.pos.getRangeTo(struct2);
                 return weight1 - weight2;
             });
             if (damagedStructures.length > 0) {
@@ -106,7 +106,8 @@ var roleRepairer = {
             console.log("totalDamage: " + totalDamage);
             room.memory.lastDamageCheckTicks = currentTicks;
             room.memory.lastTotalDamage = totalDamage;
-            return (totalDamage > lastTotalDamage && creeps.length < 4) || creeps.length < 1;
+            // return (totalDamage > lastTotalDamage && creeps.length < Math.floor((room.memory.stage + 1) / 2 + 1)) || creeps.length < 1;
+            return (totalDamage > lastTotalDamage && creeps.length < 3) || creeps.length < 1;
         } else {
             return false;
         }
