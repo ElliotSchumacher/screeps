@@ -69,6 +69,26 @@ var roleCourier = {
                     }
                 });
             }
+            if (!target) {
+                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                    filter: function(structure) {
+                        return (structure.structureType == STRUCTURE_TERMINAL) && 
+                            structure.store.getUsedCapacity(RESOURCE_ENERGY) < 100000;
+                    }
+                });
+            }
+            // if (!target) {
+            //     target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            //         filter: function(structure) {
+            //             return (structure.structureType == STRUCTURE_CONTAINER ||
+            //                 structure.structureType == STRUCTURE_STORAGE) && 
+            //                 structure.store.getUsedCapacity(RESOURCE_ENERGY) < 1000;
+            //         }
+            //     });
+            // }
+
+            
+            
             if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
@@ -83,7 +103,17 @@ var roleCourier = {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "courier"; 
         });
-        return creeps.length < 2;
+        let warehouses = room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType == STRUCTURE_CONTAINER ||
+                    structure.structureType == STRUCTURE_STORAGE) &&
+                    structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
+            }
+        });
+        let warehouseCount = warehouses.length; 
+        // console.log(room.memory.stage);
+        return creeps.length < 2 && room.memory.stage > 0 && warehouseCount > creeps.length;
+        // return creeps.length < 1 && room.memory.stage > 0 && warehouseCount > creeps.length;
         // return creeps.length < Math.ceil(room.memory.stage / 2);
     }
 };
