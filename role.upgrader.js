@@ -69,13 +69,21 @@ var roleUpgrader = {
         else {
             let warehouse = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: function(structure) {
-                    return (structure.structureType == STRUCTURE_STORAGE || 
+                    return (structure.structureType == STRUCTURE_STORAGE ||
+                            structure.structureType == STRUCTURE_CONTAINER || 
                             structure.structureType == STRUCTURE_LINK) &&
                             structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
                 }
             });
-            if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(warehouse, {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (warehouse) {
+                if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(warehouse, {visualizePathStyle: {stroke: '#ffaa00'}});
+                }
+            } else {
+                let source = creep.pos.findClosestByRange(FIND_SOURCES);
+                if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                }
             }
         }
 	},
@@ -83,6 +91,7 @@ var roleUpgrader = {
     /** @param {Room} room 
      *  @return {boolean} true if there are fewer than 2 upgraders. false otherwise
      **/
+    // TODO: Make it so that 1 or 2 are desired when building is underway, 4 else.
     spawnRequired: function(room) {
         let creeps = _.filter(Game.creeps, function(creep) {
             return creep.room == room && creep.memory.role == "upgrader"; 
@@ -94,9 +103,12 @@ var roleUpgrader = {
         });
         let desiredCount;
         if (links.length < 2) {
-            desiredCount = 2;
-        } else {
             desiredCount = 1;
+            // desiredCount = 2;
+            // desiredCount = 4;
+        } else {
+            // desiredCount = 1;
+            desiredCount = 2;
         }
         return creeps.length < desiredCount;
     }
