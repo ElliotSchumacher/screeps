@@ -11,7 +11,7 @@ var roleRepairer = {
             case 1:
                 body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
                 break;
-            case 2: case 3: case 4: case 5: case 6:
+            case 2: case 3: case 4: case 5: case 6: case 7: case 8:
                 body = [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
                 break;
             default:
@@ -50,6 +50,7 @@ var roleRepairer = {
             let damagedStructures = creep.room.find(FIND_STRUCTURES, {
                 filter: function(structure) {
                     return structure.hitsMax - structure.hits > 0;
+                        // && structure.structureType != STRUCTURE_WALL;
                 }
             });
             damagedStructures = damagedStructures.sort(function(struct1, struct2) {

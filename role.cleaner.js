@@ -15,7 +15,7 @@ var roleCleaner = {
             case 3: 
                 body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
                 break;
-            case 4: case 5: case 6: 
+            case 4: case 5: case 6: case 7: case 8:
                 body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
                 break;
             default:
@@ -85,7 +85,7 @@ var roleCleaner = {
         if (creeps.length > 0) {
             return false;
         } else {
-            for (let criteria in searchCriteria) {
+            for (let criteria of searchCriteria) {
                 let targets = room.find(criteria, {
                     filter: function(target) {
                         return target.store.getUsedCapacity(RESOURCE_ENERGY) > 0;

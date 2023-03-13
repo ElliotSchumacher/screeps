@@ -16,10 +16,10 @@ var roleUpgrader = {
                     body = [WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
                     break;
                 case 2:
-                    body = [WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
+                    body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
                     break;
                 case 3:
-                    body = [WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
+                    body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
                     break;
                 case 4:
                     body = [WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
@@ -27,7 +27,7 @@ var roleUpgrader = {
                 case 5:
                     body = [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                     break;
-                case 6:
+                case 6: case 7: case 8:
                     body = [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                     break;
                 default:
@@ -35,7 +35,15 @@ var roleUpgrader = {
                     break;
             }
         } else {
-            body = [WORK, CARRY, MOVE];
+            switch (stage) {
+                case 6: case 7: case 8:
+                    body = [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE];
+                    break;
+                default:
+                    body = [WORK, WORK, WORK, CARRY, MOVE];
+                    break;
+            }
+            
         }
         let name = "upgrader-" + stage + "-" + Game.time;
         Game.spawns["Spawn1"].spawnCreep(body, name, {memory: {role: "upgrader", stage: stage}});
