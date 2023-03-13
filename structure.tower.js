@@ -38,7 +38,8 @@ var structureTower = {
             case FIND_STRUCTURES:
                 filter = function(structure) {
                     return tower.pos.inRangeTo(structure, 5) && 
-                           structure.hits < structure.hitsMax;
+                           structure.hits < structure.hitsMax &&
+                           structure.hits < 75000;
                 }
                 break;
             default:
